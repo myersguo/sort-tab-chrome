@@ -1,0 +1,22 @@
+.App {
+  display: flex;
+  font-family: sans-serif;
+    flex-flow: row wrap;
+    min-width: 0;
+}
+
+.sidebar {
+      width: 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  background: #f0f0f0;
+  padding: 20px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  width: 80%;
+  flex: 0 0 80%;
+  max-width: 80%;
+}

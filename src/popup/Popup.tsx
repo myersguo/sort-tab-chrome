@@ -6,11 +6,11 @@ const Popup: React.FC = () => {
   }, []);
 
   const sortTabs = async () => {
-    const sortBy = await chrome.storage.local.get(['sortBy'])
+    const result = await chrome.storage.local.get(['sortBy'])
     chrome.runtime.sendMessage(
       {
         action: 'sortTabs',
-        sortBy: sortBy.sortBy || 'url',
+        sortBy: result.sortBy || 'url',
       },
       function (response) {
         if (response.message === 'success') {

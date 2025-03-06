@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Options.module.css';
 import Options from './Options';
+import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -96,7 +96,7 @@ const Options: React.FC = () => {
         sortBy: values.sortBy
       },
       function (response) {
-        console.log('设置已更新:', response);
+        console.log('Settings updated:', response);
         
         if (values.autoSort) {
           chrome.storage.local.get(['nextSortTime'], (result) => {
@@ -115,42 +115,42 @@ const Options: React.FC = () => {
 
   return (
     <div style={{ padding: 24, maxWidth: 600, margin: '0 auto' }}>
-      <h1>标签排序设置</h1>
+      <h1>Tab Sort Settings</h1>
       <Form 
         form={form} 
         layout="vertical" 
         onFinish={onFinish}
         disabled={loading}
       >
-        <Form.Item name="sortBy" label="排序方式" rules={[{ required: true }]}>
+        <Form.Item name="sortBy" label="sort type" rules={[{ required: true }]}>
           <Select>
             <Option value="url">URL</Option>
-            <Option value="title">标题</Option>
+            <Option value="title">Title</Option>
           </Select>
         </Form.Item>
         
-        <Form.Item name="autoSort" label="自动排序" valuePropName="checked">
+        <Form.Item name="autoSort" label="auto sort" valuePropName="checked">
           <Switch onChange={handleAutoSortChange} />
         </Form.Item>
         
         <Form.Item 
           name="sortInterval" 
-          label="排序间隔（分钟）"
-          rules={[{ required: true, type: 'number', min: 1, message: '请输入有效的分钟数' }]}
+          label="sort interval (minutes)"
+          rules={[{ required: true, type: 'number', min: 1, message: 'please enter a valid number' }]}
         >
           <InputNumber min={1} max={1440} />
         </Form.Item>
         
         {autoSort && nextSortTime && (
           <div style={{ marginBottom: 24 }}>
-            <Text strong>下次排序剩余时间: {remainingTime}</Text>
+            <Text strong>Next sorting time: {remainingTime}</Text>
             <Progress percent={remainingPercentage} status="active" />
           </div>
         )}
         
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            保存设置
+            Save Settings
           </Button>
           <Button 
             style={{ marginLeft: 8 }} 
@@ -172,7 +172,7 @@ const Options: React.FC = () => {
               );
             }}
           >
-            立即排序
+            Sort Now
           </Button>
         </Form.Item>
       </Form>

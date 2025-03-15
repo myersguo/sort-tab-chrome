@@ -1,5 +1,5 @@
 {
-    "name": "chrome-extension-example",
+    "name": "Tab Sorter",
     "version": "1.0.0",
     "main": "dist/index.js",
     "scripts": {

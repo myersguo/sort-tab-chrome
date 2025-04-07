@@ -1,14 +1,56 @@
 function sortTabs(sortBy: string) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    const sortedTabs = tabs.sort((a, b) => {
+    // Separate tabs into grouped and ungrouped
+    const groupedTabs: chrome.tabs.Tab[] = [];
+    const ungroupedTabs: chrome.tabs.Tab[] = [];
+    
+    // Group tabs by their groupId
+    const tabGroups = new Map<number, chrome.tabs.Tab[]>();
+    
+    tabs.forEach(tab => {
+      if (tab.groupId && tab.groupId !== -1) {
+        groupedTabs.push(tab);
+        
+        // Store tabs by their group ID
+        if (!tabGroups.has(tab.groupId)) {
+          tabGroups.set(tab.groupId, []);
+        }
+        tabGroups.get(tab.groupId)?.push(tab);
+      } else {
+        ungroupedTabs.push(tab);
+      }
+    });
+    
+    // Sort tabs within each group
+    for (const [groupId, groupTabs] of tabGroups) {
+      const sortedGroupTabs = groupTabs.sort((a, b) => {
+        let valA = sortBy === 'url' ? a.url || '' : a.title || '';
+        let valB = sortBy === 'url' ? b.url || '' : b.title || '';
+        return valA.localeCompare(valB);
+      });
+      
+      let firstTabInGroup = tabs.findIndex(t => t.groupId === groupId);
+      sortedGroupTabs.forEach((tab, index) => {
+        if (tab.id !== undefined) {
+          chrome.tabs.move(tab.id, { index: firstTabInGroup + index });
+        }
+      });
+    }
+    
+    // Sort ungrouped tabs
+    const sortedUngroupedTabs = ungroupedTabs.sort((a, b) => {
       let valA = sortBy === 'url' ? a.url || '' : a.title || '';
       let valB = sortBy === 'url' ? b.url || '' : b.title || '';
       return valA.localeCompare(valB);
     });
-
-    sortedTabs.forEach((tab, index) => {
+    
+    // Move all ungrouped tabs to the end
+    const lastGroupedTabIndex = groupedTabs.length > 0 ? 
+      Math.max(...groupedTabs.map(t => t.index)) : -1;
+    
+    sortedUngroupedTabs.forEach((tab, index) => {
       if (tab.id !== undefined) {
-        chrome.tabs.move(tab.id, { index });
+        chrome.tabs.move(tab.id, { index: lastGroupedTabIndex + index + 1 });
       }
     });
   });
